@@ -1,18 +1,17 @@
 defmodule Blockchain do
-  @moduledoc """
-  Documentation for Blockchain.
-  """
 
-  @doc """
-  Hello world.
+  use Supervisor
 
-  ## Examples
+  def start_link() do
+    Supervisor.start_link(__MODULE__, :ok)
+  end
 
-      iex> Blockchain.hello
-      :world
+  def init(:ok) do
+    children = [
+      Blockchain.TxsPool,
+      Blockchain.Chain
+   ]
 
-  """
-  def hello do
-    :world
+    Supervisor.init(children, strategy: :one_for_one)
   end
 end
