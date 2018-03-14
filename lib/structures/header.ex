@@ -30,12 +30,17 @@ defmodule Blockchain.Structures.Header do
 
   def genesis_header() do
     %Header{
-      prev_block: <<0::256>>,
+      prev_block: "",
       diff_target: 1,
       nonce: 222,
-      chain_state_merkle: <<0::256>>,
-      txs_merkle: <<0::256>>
+      chain_state_merkle: "",
+      txs_merkle: ""
     }
+  end
+
+  def hash_header(header) do
+    data = header.prev_block <> to_string(header.nonce) <> header.txs_merkle
+    IO.inspect :crypto.hash(:sha256, data) |> Base.encode16
   end
 
 end

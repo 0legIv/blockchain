@@ -27,13 +27,14 @@ defmodule Blockchain.Chain do
   end
 
   def handle_call({:latest_block_hash}, _, state) do
-    last_block = List.last(state)
+    latest_block = List.last(state)
+    latest_block = Block.hash_block(latest_block)
 
-    {:reply, List.last(state), state}
+    {:reply, latest_block, state}
   end
 
   def handle_call({:add_block, block}, _, state) do
-    {:reply, :ok, [state | block]}
+    {:reply, :ok, state ++ [block]}
   end
 
 end

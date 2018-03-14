@@ -9,7 +9,8 @@ defmodule Blockchain do
   def init(:ok) do
     children = [
       Blockchain.TxsPool,
-      Blockchain.Chain
+      Blockchain.Chain,
+      Blockchain.Miner
    ]
 
     Supervisor.init(children, strategy: :one_for_one)

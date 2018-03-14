@@ -14,15 +14,24 @@ defmodule Blockchain.Structures.Block do
     txs_list: list(Tx.t)
   }
 
+  def create_block(header, txs_list) do
+    %Block{
+      header: header,
+      txs_list: txs_list
+    }
+  end
+
   def genesis_block() do
     %Block{
       header: Header.genesis_header,
-      txs_list: []
+      txs_list: Tx.genesis_block_txs()
     }
   end
 
   def hash_block(block) do
-
+    # hashed_txs = for tx <- block.txs_list, do: Tx.hash_tx(tx)
+    hashed_txs = Tx.hash_txs(block.txs_list)
+    data = Header.hash_header(block.header) <> hashed_txs
   end
 
 
