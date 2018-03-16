@@ -40,7 +40,7 @@ defmodule Blockchain.Structures.Header do
 
   def hash_header(header) do
     data = header.prev_block <> to_string(header.nonce) <> header.txs_merkle
-    IO.inspect :crypto.hash(:sha256, data) |> Base.encode16
+    :crypto.hash(:sha256, data) |> Base.encode16
   end
 
 end

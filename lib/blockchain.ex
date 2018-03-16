@@ -1,4 +1,4 @@
-defmodule Blockchain do
+defmodule Blockchain.Supervisor do
 
   use Supervisor
 

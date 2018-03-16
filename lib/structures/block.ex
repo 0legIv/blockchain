@@ -30,8 +30,7 @@ defmodule Blockchain.Structures.Block do
 
   def hash_block(block) do
     # hashed_txs = for tx <- block.txs_list, do: Tx.hash_tx(tx)
-    hashed_txs = Tx.hash_txs(block.txs_list)
-    data = Header.hash_header(block.header) <> hashed_txs
+    Header.hash_header(block.header)
   end
 
 

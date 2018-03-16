@@ -8,6 +8,7 @@ defmodule Blockchain.Miner do
   alias Blockchain.Structures.Tx
   alias Blockchain.Structures.Header
   alias Blockchain.Structures.Block
+  alias Blockchain.MerkleTree
 
   def start_link(_args) do
     GenServer.start_link(__MODULE__,  %{}, name: __MODULE__)
@@ -17,15 +18,12 @@ defmodule Blockchain.Miner do
     state = %{
       memory_pool: []
     }
+    start_mining()
     {:ok, state}
   end
 
   def start_mining() do
-    GenServer.call(__MODULE__, {:start_mining})
-  end
-
-  def get_txs() do
-    GenServer.call(__MODULE__, {:get_txs})
+    GenServer.cast(__MODULE__, {:start_mining})
   end
 
   def get_state() do
@@ -34,18 +32,9 @@ defmodule Blockchain.Miner do
 
   #server
 
-  def handle_call({:start_mining}, _, state) do
-    txs_hash = Tx.hash_txs(state.memory_pool)
-    prev_block_hash = Chain.latest_block_hash
-    hd = Header.create_hd(prev_block_hash, 4, 1, "", txs_hash)
-    pow = proof_of_work(hd)
-    new_block_to_chainstate(pow, state.memory_pool)
+  def handle_cast({:start_mining}, state) do
+    mining(state)
     {:reply, :ok, state}
-  end
-
-  def handle_call({:get_txs}, _, state) do
-    txs = TxsPool.get_and_empty_pool()
-    {:reply, :ok, %{state | memory_pool: check_txs(txs)}}
   end
 
   def handle_call({:get_state}, _, state) do
@@ -60,7 +49,18 @@ defmodule Blockchain.Miner do
       tx.amount < Wallet.check_amount(tx.from_acc),
       # String.length(tx.el_curve_sign) > 10,
       do: tx
-      valid_txs ++ [Tx.coinbase_tx("04E891784A12EB25E93F0F2A9D74C8AB4A9AD3C5FBF3C84C269EFBFDF78B870DD9DCDCB73EC68D6A17762E3AE778C826E5E90A5A409C3C56C6AAA25A33925A5EA5")]
+      valid_txs ++ [Tx.coinbase_tx(Keys.get_miner_public_key)]
+  end
+
+  defp mining(state) do
+    txs = TxsPool.get_and_empty_pool()
+    state = %{state | memory_pool: check_txs(txs)}
+    merkle_root = MerkleTree.get_merkle_root(Tx.hash_txs(state.memory_pool))
+    prev_block_hash = Chain.latest_block_hash
+    hd = Header.create_hd(prev_block_hash, 5, 1, "", merkle_root)
+    pow = proof_of_work(hd)
+    new_block_to_chainstate(pow, state.memory_pool)
+    mining(state)
   end
 
   defp proof_of_work(hd) do

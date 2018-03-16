@@ -1,15 +1,11 @@
 defmodule Blockchain.Structures.Tx do
 
-  @private_key1 "F98B04BC42B472ACC18829FAA979FBA3"
-  @private_key2 "7DE02990657F7DA9A0F7008957461A59"
-  @private_key3 "10CAA0396F838C7C4F58575B459C42FD"
-  @miner_private_key "09572E1A9FB5DECE6DA88DE0EE009849"
-
   alias Blockchain.Structures.Tx
   alias Blockchain.TxsPool
   alias Blockchain.Keys
 
   defstruct [
+    :id,
     :from_acc,
     :to_acc,
     :amount,
@@ -17,6 +13,7 @@ defmodule Blockchain.Structures.Tx do
   ]
 
   @type t :: %Tx{
+    id: string(),
     from_acc: string(),
     to_acc: string(),
     amount: integer,
@@ -25,6 +22,7 @@ defmodule Blockchain.Structures.Tx do
 
   def create_tx(from_acc, to_acc, amount) do
     new_tx = %Tx{
+      id: generate_tx_id(),
       from_acc: from_acc,
       to_acc: to_acc,
       amount: amount,
@@ -55,21 +53,24 @@ defmodule Blockchain.Structures.Tx do
   end
 
   def genesis_block_txs() do
-    tx1 = coinbase_tx(Keys.generate_public_key(@private_key1))
-    tx2 = coinbase_tx(Keys.generate_public_key(@private_key2))
-    tx3 = coinbase_tx(Keys.generate_public_key(@private_key3))
-    tx4 = coinbase_tx(Keys.generate_public_key(@miner_private_key))
+    tx1 = Keys.get_private_key1() |> Keys.generate_public_key() |> coinbase_tx()
+    tx2 = Keys.get_private_key2() |> Keys.generate_public_key() |> coinbase_tx()
+    tx3 = Keys.get_private_key3() |> Keys.generate_public_key() |> coinbase_tx()
+    tx4 = Keys.get_miner_private_key() |> Keys.generate_public_key() |> coinbase_tx()
     [tx1, tx2, tx3, tx4]
   end
 
+  def generate_tx_id() do
+    :crypto.strong_rand_bytes(8) |> Base.encode16()
+  end
+
   def hash_tx(tx) do
-    data = tx.from_acc <> tx.to_acc <> to_string(tx.amount)
+    data = tx.id <> tx.from_acc <> tx.to_acc <> to_string(tx.amount)
     :crypto.hash(:sha256, data) |> Base.encode16
   end
 
   def hash_txs(txs) do
     hashed_txs = for tx <- txs, do: hash_tx(tx)
-    Enum.join hashed_txs
   end
 
 end
