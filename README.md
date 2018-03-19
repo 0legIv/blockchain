@@ -4,11 +4,15 @@ Simple blockchain implementation in Elixir. For proof of work "hashcash" algorit
 
 **To run:** iex -S mix
 
-**Start the miner:** Blockchain.Miner.start_mining
+**Start the miner:** Blockchain.Miner.start_mining()
 
-**Stop the miner:** Blockchain.Miner.stop_mining
+**Stop the miner:** Blockchain.Miner.stop_mining()
 
-**Check the chainstate:** Blockchain.Chain.get_state
+**Check the chainstate:** Blockchain.Chain.get_state()
+
+**To test the wallet functionality**: Blockchain.Wallet.send_token_test()
+  This is the test simulation of 4 hardcoded accounts, sending tokens to each other.
+  The result of txs you can see when you check the **Chainstate**
 
 ## Installation
 

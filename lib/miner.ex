@@ -68,7 +68,7 @@ defmodule Blockchain.Miner do
   @doc """
     Verifies the transactions from the Txs pool.
   """
-  defp check_txs(txs) do
+  def check_txs(txs) do
     valid_txs = for tx <- txs,
       Tx.is_verified?(Tx.hash_tx(tx), tx.el_curve_sign, tx.from_acc), # verify tx sign according to :crypto algorithm
       tx.amount < Wallet.check_amount(tx.from_acc), # verify wallet amount of tokens
@@ -92,6 +92,17 @@ defmodule Blockchain.Miner do
 
   defp mining(%{miner: :stopped} = state) do
     state
+  end
+
+
+  def mine_single_block() do
+    valid_txs = TxsPool.get_and_empty_pool() |> check_txs() # validate txs
+    merkle_root = MerkleTree.get_merkle_root(Tx.hash_txs(valid_txs)) # create merkle tree from valid txs and return the root
+    prev_block_hash = Chain.latest_block_hash
+    chain_state_merkle = Chain.get_state |> Block.hash_blocks |> MerkleTree.get_merkle_root # create merkle tree from the blocks that are already created
+    hd = Header.create_hd(prev_block_hash, @difficulty, 1, chain_state_merkle, merkle_root) # create header with nonce 1
+    pow = proof_of_work(hd) # start the proof of work function
+    new_block_to_chainstate(pow, valid_txs) # add new block to the chainstate
   end
 
   @doc """
