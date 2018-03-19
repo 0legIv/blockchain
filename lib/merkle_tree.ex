@@ -1,13 +1,15 @@
 defmodule Blockchain.MerkleTree do
 
+  @spec get_merkle_root(List.t) :: String.t
   def get_merkle_root(txs) do
     grouped_txs = group_txs(txs)
     merkle_tree = calculate_map(to_map(grouped_txs))
-    # IO.inspect merkle_tree
+    # merkle_tree
     [merkle_root] = Map.keys(merkle_tree)
     merkle_root
   end
 
+  @spec group_txs(List.t) :: List.t
   defp group_txs(txs) do
     if rem(length(txs), 2) != 0 do
       txs = txs ++ [List.last(txs)]
@@ -17,16 +19,19 @@ defmodule Blockchain.MerkleTree do
     end
   end
 
+  @spec to_map(List.t) :: Map.t
   defp to_map(grouped_txs) do
     for tx_pair <- grouped_txs, into: %{}, do: {hash_keys(tx_pair), tx_pair}
   end
 
-  def hash_keys(tx_pair) do
+  @spec hash_keys(List.t) :: String.t
+  defp hash_keys(tx_pair) do
     joined_pair = Enum.join(tx_pair)
     hashed_pair = :crypto.hash(:sha256, joined_pair)
     hashed_pair |> Base.encode16()
   end
 
+  @spec calculate_map(Map.t) :: Map.t
   defp calculate_map(map) do
     keys = Map.keys(map)
     cond do

@@ -18,6 +18,7 @@ defmodule Blockchain.Structures.Header do
     txs_merkle: binary()
   }
 
+  @spec create_hd(String.t, String.t, integer, String.t, String.t) :: %Header{}
   def create_hd(prev_block, diff_target, nonce, chain_state_merkle, txs_merkle) do
     %Header{
       prev_block: prev_block,

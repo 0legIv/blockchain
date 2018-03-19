@@ -8,7 +8,7 @@ defmodule Blockchain.Chain do
     GenServer.start_link(__MODULE__, [Block.genesis_block], name: __MODULE__)
   end
 
-  def get_chainstate() do
+  def get_state() do
     GenServer.call(__MODULE__, {:get_state})
   end
 
@@ -16,6 +16,7 @@ defmodule Blockchain.Chain do
     GenServer.call(__MODULE__, {:latest_block_hash})
   end
 
+  @spec add_block(%Block{}) :: :ok
   def add_block(block) do
     GenServer.call(__MODULE__, {:add_block, block})
   end

@@ -1,13 +1,12 @@
 defmodule Blockchain.TxsPool do
 
-  alias Blockchain.Structures.Tx
-
   use GenServer
 
   def start_link(_args) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
+  @spec add_tx(String.t) :: :ok
   def add_tx(tx) do
     GenServer.call(__MODULE__, {:add_tx, tx})
   end
