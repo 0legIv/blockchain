@@ -24,7 +24,7 @@ defmodule Blockchain.Miner do
   end
 
   def stop_mining() do
-    GenServer.call(__MODULE__, {:stop_mining})
+    GenServer.call(__MODULE__, {:stop_mining}, 12000)
   end
 
   def start_mining() do
