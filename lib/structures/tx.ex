@@ -21,7 +21,7 @@ defmodule Blockchain.Structures.Tx do
   }
 
   def create_tx(from_acc, to_acc, amount) do
-    if(String.length(to_acc) > 5 && amount > 0) do
+    if(String.length(to_acc) > 5 && amount > 0 && is_integer(amount)) do
       new_tx = %Tx{
         id: generate_tx_id(),
         from_acc: from_acc,
@@ -53,7 +53,6 @@ defmodule Blockchain.Structures.Tx do
     Verify the transaction with the public key.
   """
   def is_verified?(tx_hash, signature, pub_key) do
-    # {:ok, data} = Base.decode16(data)
     if(pub_key == "") do
       true
     else

@@ -69,11 +69,32 @@ defmodule Blockchain.Miner do
     Verifies the transactions from the Txs pool.
   """
   def check_txs(txs) do
-    valid_txs = for tx <- txs,
-      Tx.is_verified?(Tx.hash_tx(tx), tx.el_curve_sign, tx.from_acc), # verify tx sign according to :crypto algorithm
-      tx.amount < Wallet.check_amount(tx.from_acc), # verify wallet amount of tokens
-      do: tx
-      valid_txs ++ [Tx.coinbase_tx(Keys.get_miner_public_key)]  # adds Coinbase tx to the verified txs
+    verified_txs = Enum.reduce(txs, [], fn(tx, valid_txs) -> 
+      if(Tx.is_verified?(Tx.hash_tx(tx), tx.el_curve_sign, tx.from_acc) and
+      tx.amount <= Wallet.check_amount(tx.from_acc) |> check_amount_after_txs(valid_txs, tx.from_acc)) do 
+        valid_txs ++ [tx]
+      else
+        valid_txs 
+      end
+    end)
+
+    verified_txs ++ [Tx.coinbase_tx(Keys.get_miner_public_key)]
+  end
+
+  @doc """
+    Checks the amount of wallet after the verified tx, in order to exclude double spend tx
+  """
+  def check_amount_after_txs(amount, txs, public_key) do
+    Enum.reduce(txs, amount, fn(tx, acc) -> 
+      cond do
+        tx.to_acc == public_key ->
+          acc + tx.amount
+        tx.from_acc == public_key ->
+          acc - tx.amount
+        true ->
+          acc
+      end
+    end)
   end
 
   @doc """

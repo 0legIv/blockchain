@@ -12,24 +12,36 @@ defmodule Blockchain.Keys do
     # pub_key |> Base.encode16()
   end
 
-  def get_miner_public_key() do
-    generate_public_key(@miner_private_key)
-  end
-
   def get_miner_private_key() do
     @miner_private_key
+  end
+
+  def get_miner_public_key() do
+    generate_public_key(@miner_private_key)
   end
 
   def get_private_key1() do
     @private_key1
   end
 
+  def get_public_key1() do
+    generate_public_key(@private_key1)
+  end
+
   def get_private_key2() do
     @private_key2
   end
 
+  def get_public_key2() do
+    generate_public_key(@private_key2)
+  end
+
   def get_private_key3() do
     @private_key3
+  end
+
+  def get_public_key3() do
+    generate_public_key(@private_key3)
   end
 
 end

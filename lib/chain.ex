@@ -8,6 +8,10 @@ defmodule Blockchain.Chain do
     GenServer.start_link(__MODULE__, [Block.genesis_block], name: __MODULE__)
   end
 
+  def empty_chain_state() do
+    GenServer.call(__MODULE__, {:empty_chain_state})
+  end
+
   def get_state() do
     GenServer.call(__MODULE__, {:get_state})
   end
@@ -25,6 +29,10 @@ defmodule Blockchain.Chain do
 
   def handle_call({:get_state}, _, state) do
     {:reply, state, state}
+  end
+
+  def handle_call({:empty_chain_state}, _, state) do
+    {:reply, :ok, [Block.genesis_block]}
   end
 
   def handle_call({:latest_block_hash}, _, state) do

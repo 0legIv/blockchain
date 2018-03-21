@@ -10,9 +10,11 @@ Simple blockchain implementation in Elixir. For proof of work "hashcash" algorit
 
 **Check the chainstate:** Blockchain.Chain.get_state()
 
-**To test the wallet functionality**: Blockchain.Wallet.send_token_test()
-  This is the test simulation of 4 hardcoded accounts, sending tokens to each other.
-  The result of txs you can see when you check the **Chainstate**
+**To check the wallet amount**: Blockchain.Wallet.check_amount(public_key)
+
+**To send tokens**: Blockchain.Wallet.send_tokens(sender_pub_key, receiver_pub_key, amount, sender_private_key)
+
+
 
 ## Installation
 
