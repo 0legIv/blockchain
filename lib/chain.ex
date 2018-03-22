@@ -16,6 +16,10 @@ defmodule Blockchain.Chain do
     GenServer.call(__MODULE__, {:get_state})
   end
 
+  def latest_block() do
+    GenServer.call(__MODULE__, {:latest_block})
+  end
+
   def latest_block_hash() do
     GenServer.call(__MODULE__, {:latest_block_hash})
   end
@@ -33,6 +37,11 @@ defmodule Blockchain.Chain do
 
   def handle_call({:empty_chain_state}, _, state) do
     {:reply, :ok, [Block.genesis_block]}
+  end
+
+  def handle_call({:latest_block}, _, state) do
+    latest_block = List.last(state)
+    {:reply, latest_block, state}
   end
 
   def handle_call({:latest_block_hash}, _, state) do

@@ -3,11 +3,21 @@ defmodule ChainStateTest do
   
     alias Blockchain
     alias Blockchain.Structures.Tx
+    alias Blockchain.Structures.Block
     alias Blockchain.Miner
     alias Blockchain.Wallet
     alias Blockchain.Keys
     alias Blockchain.Chain
     alias Blockchain.TxsPool
+    alias Blockchain.MerkleTree
+
+    test "block_added_to_chainstate" do
+        Chain.empty_chain_state()
+        state = Chain.get_state |> Block.hash_blocks
+        Miner.mine_single_block()
+        latest_block = Chain.latest_block
+        assert latest_block.header.chain_state_merkle == MerkleTree.get_merkle_root(state)
+    end
 
     test "tx_added_to_chainstate" do
         Chain.empty_chain_state()
