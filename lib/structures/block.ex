@@ -1,5 +1,4 @@
 defmodule Blockchain.Structures.Block do
-
   alias Blockchain.Structures.Header
   alias Blockchain.Structures.Tx
   alias Blockchain.Structures.Block
@@ -10,11 +9,11 @@ defmodule Blockchain.Structures.Block do
   ]
 
   @type t :: %Block{
-    header: Header.t,
-    txs_list: list(Tx.t)
-  }
+          header: Header.t(),
+          txs_list: list(Tx.t())
+        }
 
-  @spec create_block(String.t, List.t) :: %Block{}
+  @spec create_block(String.t(), List.t()) :: %Block{}
   def create_block(header, txs_list) do
     %Block{
       header: header,
@@ -24,7 +23,7 @@ defmodule Blockchain.Structures.Block do
 
   def genesis_block() do
     %Block{
-      header: Header.genesis_header,
+      header: Header.genesis_header(),
       txs_list: Tx.genesis_block_txs()
     }
   end
@@ -37,6 +36,4 @@ defmodule Blockchain.Structures.Block do
   def hash_blocks(blocks) do
     for block <- blocks, do: hash_block(block)
   end
-
-
 end

@@ -1,5 +1,4 @@
 defmodule Blockchain.Structures.Header do
-
   alias Blockchain.Structures.Header
 
   defstruct [
@@ -11,14 +10,14 @@ defmodule Blockchain.Structures.Header do
   ]
 
   @type t :: %Header{
-    prev_block: binary(),
-    diff_target: integer,
-    nonce: integer,
-    chain_state_merkle: binary(),
-    txs_merkle: binary()
-  }
+          prev_block: binary(),
+          diff_target: integer,
+          nonce: integer,
+          chain_state_merkle: binary(),
+          txs_merkle: binary()
+        }
 
-  @spec create_hd(String.t, String.t, integer, String.t, String.t) :: %Header{}
+  @spec create_hd(String.t(), String.t(), integer, String.t(), String.t()) :: %Header{}
   def create_hd(prev_block, diff_target, nonce, chain_state_merkle, txs_merkle) do
     %Header{
       prev_block: prev_block,
@@ -41,7 +40,6 @@ defmodule Blockchain.Structures.Header do
 
   def hash_header(header) do
     data = header.prev_block <> to_string(header.nonce) <> header.txs_merkle
-    :crypto.hash(:sha256, data) |> Base.encode16
+    :crypto.hash(:sha256, data) |> Base.encode16()
   end
-
 end

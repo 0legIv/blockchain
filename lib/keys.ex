@@ -1,5 +1,4 @@
 defmodule Blockchain.Keys do
-
   @private_key1 "F98B04BC42B472ACC18829FAA979FBA3"
   @private_key2 "7DE02990657F7DA9A0F7008957461A59"
   @private_key3 "10CAA0396F838C7C4F58575B459C42FD"
@@ -43,5 +42,4 @@ defmodule Blockchain.Keys do
   def get_public_key3() do
     generate_public_key(@private_key3)
   end
-
 end

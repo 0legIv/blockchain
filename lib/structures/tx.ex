@@ -1,5 +1,4 @@
 defmodule Blockchain.Structures.Tx do
-
   alias Blockchain.Structures.Tx
   alias Blockchain.TxsPool
   alias Blockchain.Keys
@@ -13,15 +12,15 @@ defmodule Blockchain.Structures.Tx do
   ]
 
   @type t :: %Tx{
-    id: string(),
-    from_acc: string(),
-    to_acc: string(),
-    amount: integer,
-    el_curve_sign: string()
-  }
+          id: string(),
+          from_acc: string(),
+          to_acc: string(),
+          amount: integer,
+          el_curve_sign: string()
+        }
 
   def create_tx(from_acc, to_acc, amount) do
-    if(String.length(to_acc) > 5 && amount > 0 && is_integer(amount)) do
+    if String.length(to_acc) > 5 && amount > 0 && is_integer(amount) do
       new_tx = %Tx{
         id: generate_tx_id(),
         from_acc: from_acc,
@@ -48,12 +47,11 @@ defmodule Blockchain.Structures.Tx do
     %{tx | el_curve_sign: sign}
   end
 
-
   @doc """
     Verify the transaction with the public key.
   """
   def is_verified?(tx_hash, signature, pub_key) do
-    if(pub_key == "") do
+    if pub_key == "" do
       true
     else
       {:ok, pub_key} = Base.decode16(pub_key)
@@ -78,15 +76,14 @@ defmodule Blockchain.Structures.Tx do
     :crypto.strong_rand_bytes(8) |> Base.encode16()
   end
 
-  @spec hash_tx(String.t) :: String.t
+  @spec hash_tx(String.t()) :: String.t()
   def hash_tx(tx) do
     data = tx.id <> tx.from_acc <> tx.to_acc <> to_string(tx.amount)
-    :crypto.hash(:sha256, data) |> Base.encode16
+    :crypto.hash(:sha256, data) |> Base.encode16()
   end
 
-  @spec hash_txs(List.t) :: List.t
+  @spec hash_txs(List.t()) :: List.t()
   def hash_txs(txs) do
     hashed_txs = for tx <- txs, do: hash_tx(tx)
   end
-
 end

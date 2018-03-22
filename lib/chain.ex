@@ -1,11 +1,10 @@
 defmodule Blockchain.Chain do
-
   alias Blockchain.Structures.Block
 
   use GenServer
 
   def start_link(_args) do
-    GenServer.start_link(__MODULE__, [Block.genesis_block], name: __MODULE__)
+    GenServer.start_link(__MODULE__, [Block.genesis_block()], name: __MODULE__)
   end
 
   def empty_chain_state() do
@@ -29,14 +28,14 @@ defmodule Blockchain.Chain do
     GenServer.call(__MODULE__, {:add_block, block})
   end
 
-  #server
+  # server
 
   def handle_call({:get_state}, _, state) do
     {:reply, state, state}
   end
 
   def handle_call({:empty_chain_state}, _, state) do
-    {:reply, :ok, [Block.genesis_block]}
+    {:reply, :ok, [Block.genesis_block()]}
   end
 
   def handle_call({:latest_block}, _, state) do
@@ -54,5 +53,4 @@ defmodule Blockchain.Chain do
   def handle_call({:add_block, block}, _, state) do
     {:reply, :ok, state ++ [block]}
   end
-
 end

@@ -1,5 +1,4 @@
 defmodule Blockchain.Supervisor do
-
   use Supervisor
 
   def start_link() do
@@ -11,7 +10,7 @@ defmodule Blockchain.Supervisor do
       Blockchain.TxsPool,
       Blockchain.Chain,
       Blockchain.Miner
-   ]
+    ]
 
     Supervisor.init(children, strategy: :one_for_one)
   end
