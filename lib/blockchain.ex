@@ -1,17 +1,9 @@
-defmodule Blockchain.Supervisor do
-  use Supervisor
+defmodule Blockchain do
+  @moduledoc """
+  Blockchain keeps the contexts that define your domain
+  and business logic.
 
-  def start_link() do
-    Supervisor.start_link(__MODULE__, :ok)
-  end
-
-  def init(:ok) do
-    children = [
-      Blockchain.TxsPool,
-      Blockchain.Chain,
-      Blockchain.Miner
-    ]
-
-    Supervisor.init(children, strategy: :one_for_one)
-  end
+  Contexts are also responsible for managing your data, regardless
+  if it comes from the database, an external API or others.
+  """
 end
