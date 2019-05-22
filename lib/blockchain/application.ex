@@ -6,12 +6,17 @@ defmodule Blockchain.Application do
   use Application
 
   def start(_type, _args) do
+    import Supervisor.Spec, warn: false
+
     # List all child processes to be supervised
+    mongo_opts = Application.fetch_env!(:blockchain, :mongo)
+
     children = [
-      # Start the Ecto repository
-      Blockchain.Repo,
-      # Start the endpoint when the application starts
-      BlockchainWeb.Endpoint
+      BlockchainWeb.Endpoint,
+      worker(Mongo, [mongo_opts], id: :mongo),
+      Blockchain.TxsPool,
+      Blockchain.Chain,
+      Blockchain.Miner
       # Starts a worker by calling: Blockchain.Worker.start_link(arg)
       # {Blockchain.Worker, arg},
     ]

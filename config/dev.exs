@@ -21,6 +21,17 @@ config :blockchain, BlockchainWeb.Endpoint,
     ]
   ]
 
+config :blockchain,
+  mongo: [
+    name: :mongo,
+    pool: DBConnection.Poolboy,
+    url: "mongodb://localhost:27017/blockchain",
+    pool_size: 2,
+    pool_overflow: 10,
+    timeout: 20_000,
+    pool_timeout: 15_000
+  ]
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed
